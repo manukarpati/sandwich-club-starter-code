@@ -4,16 +4,26 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.udacity.sandwichclub.model.Sandwich;
 import com.udacity.sandwichclub.utils.JsonUtils;
 
+import org.json.JSONException;
+
 public class DetailActivity extends AppCompatActivity {
 
     public static final String EXTRA_POSITION = "extra_position";
     private static final int DEFAULT_POSITION = -1;
+    private ImageView mSandwichImage;
+    private TextView mIngredientsTextView;
+    private TextView mOriginTextView;
+    private TextView mDescriptionTextView;
+    private TextView mAlsoKnownTextView;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +46,14 @@ public class DetailActivity extends AppCompatActivity {
 
         String[] sandwiches = getResources().getStringArray(R.array.sandwich_details);
         String json = sandwiches[position];
-        Sandwich sandwich = JsonUtils.parseSandwichJson(json);
+        Sandwich sandwich = null;
+        try {
+            sandwich = JsonUtils.parseSandwichJson(json);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
         if (sandwich == null) {
             // Sandwich data unavailable
             closeOnError();
@@ -49,6 +66,18 @@ public class DetailActivity extends AppCompatActivity {
                 .into(ingredientsIv);
 
         setTitle(sandwich.getMainName());
+
+        for (String item : sandwich.getAlsoKnownAs())
+        {
+            mAlsoKnownTextView.append(item);
+        }
+        for (String item : sandwich.getIngredients())
+        {
+            mIngredientsTextView.append(item);
+        }
+        mDescriptionTextView.setText(sandwich.getDescription());
+        //TODO mSandwichImage.setImageResource();
+        mOriginTextView.setText(sandwich.getPlaceOfOrigin());
     }
 
     private void closeOnError() {
@@ -57,6 +86,10 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void populateUI() {
-
+        mIngredientsTextView = findViewById(R.id.ingredients_tv);
+          mAlsoKnownTextView = findViewById(R.id.also_known_tv);
+          mDescriptionTextView = findViewById(R.id.description_tv);
+          mSandwichImage = findViewById(R.id.image_iv);
+          mOriginTextView = findViewById(R.id.origin_tv);
     }
 }
