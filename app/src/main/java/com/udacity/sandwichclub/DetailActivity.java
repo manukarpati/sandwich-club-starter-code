@@ -13,6 +13,8 @@ import com.udacity.sandwichclub.utils.JsonUtils;
 
 import org.json.JSONException;
 
+import java.util.List;
+
 public class DetailActivity extends AppCompatActivity {
 
     public static final String EXTRA_POSITION = "extra_position";
@@ -66,14 +68,21 @@ public class DetailActivity extends AppCompatActivity {
                 .into(ingredientsIv);
 
         setTitle(sandwich.getMainName());
-
-        for (String item : sandwich.getAlsoKnownAs())
+        List<String> alsoKnownList = sandwich.getAlsoKnownAs();
+        for (int i=0; i<alsoKnownList.size(); i++)
         {
-            mAlsoKnownTextView.append(item);
+            mAlsoKnownTextView.append(alsoKnownList.get(i));
+            if(i!=alsoKnownList.size()-1) {
+                mAlsoKnownTextView.append(", ");
+            }
         }
-        for (String item : sandwich.getIngredients())
+        List<String> ingredientList = sandwich.getIngredients();
+        for (int i=0; i<ingredientList.size(); i++)
         {
-            mIngredientsTextView.append(item);
+            mIngredientsTextView.append(ingredientList.get(i));
+            if(i!=ingredientList.size()-1) {
+                mIngredientsTextView.append(", ");
+            }
         }
         mDescriptionTextView.setText(sandwich.getDescription());
         //TODO mSandwichImage.setImageResource();
